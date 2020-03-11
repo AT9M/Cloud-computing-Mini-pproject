@@ -3,17 +3,17 @@
 integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 crossorigin="anonymous"></script>
 
-
-
 <title>MiniProject</title>
   </head>
   <body>
       <h1>Search Results</h1>
-    <div id="buttons">
-    <label> <input id="query" value='' type="text"/><button id="search-button"onclick="keyWordsearch()">Search</button>
-                                                    <button id="Save"    onclick="">Save</button>
-                                                    <button id="Load"    onclick="">Load</button>
-                                                  </label>
+
+    <label> <input id="query" value='' type="text"/>
+                                                    <button id="search-button"onclick="keyWordsearch()">Search</button>
+                                                    <button id="Save"    onclick="SAVE()">Save</button>
+                                                    <button onclick="window.location.href = '/pages/load.html';">Load</button>
+
+    </label>
     <div id="container">
 
     <ul id="results"></ul>
@@ -25,18 +25,18 @@ crossorigin="anonymous"></script>
 
 
 
-<iframe id="thumbnail"  src=""></iframe>
-<h3 id = "title">Video Title</h3>
-<p id="description">Video Description<p>
+<iframe id="thumbnail0"  src=""></iframe>
+<h3 id = "title0">Video Title</h3>
+<p id="description0">Video Description<p>
+<iframe id="thumbnail1"  src=""></iframe>
+<h3 id = "title1">Video Title</h3>
+<p id="description1">Video Description<p>
 <iframe id="thumbnail2"  src=""></iframe>
 <h3 id = "title2">Video Title</h3>
 <p id="description2">Video Description<p>
 <iframe id="thumbnail3"  src=""></iframe>
 <h3 id = "title3">Video Title</h3>
 <p id="description3">Video Description<p>
-<iframe id="thumbnail4"  src=""></iframe>
-<h3 id = "title4">Video Title</h3>
-<p id="description4">Video Description<p>
 
 <script>
 var i =0;
@@ -50,6 +50,7 @@ function keyWordsearch(){
            getVideo();
    });
 }
+
 
 // function makeRequest(){
 //     var q = $('#query').val();
@@ -85,28 +86,62 @@ function getVideo() {
     }
 
 function embedVideo(data) {
-
     // $('iframe').attr('src', 'https://www.youtube.com/embed/' + data.items[0].id.videoId)
     // $('h3').text(data.items[0].snippet.title)
     // $('.description').text(data.items[0].snippet.description)
-document.getElementById('thumbnail').setAttribute('src', 'https://www.youtube.com/embed/' + data.items[0].id.videoId);
-document.getElementById('title').innerHTML=data.items[0].snippet.title;
-document.getElementById('description').innerHTML=data.items[0].snippet.description;
+// document.getElementById('thumbnail').setAttribute('src', 'https://www.youtube.com/embed/' + data.items[0].id.videoId);
+// document.getElementById('title').innerHTML=data.items[0].snippet.title;
+// document.getElementById('description').innerHTML=data.items[0].snippet.description;
+//
+// document.getElementById('thumbnail2').setAttribute('src', 'https://www.youtube.com/embed/' + data.items[1].id.videoId);
+// document.getElementById('title2').innerHTML=data.items[1].snippet.title;
+// document.getElementById('description2').innerHTML=data.items[1].snippet.description;
+//
+// document.getElementById('thumbnail3').setAttribute('src', 'https://www.youtube.com/embed/' + data.items[2].id.videoId);
+// document.getElementById('title3').innerHTML=data.items[2].snippet.title;
+// document.getElementById('description3').innerHTML=data.items[2].snippet.description;
+//
+// document.getElementById('thumbnail4').setAttribute('src', 'https://www.youtube.com/embed/' + data.items[3].id.videoId);
+// document.getElementById('title4').innerHTML=data.items[3].snippet.title;
+// document.getElementById('description4').innerHTML=data.items[3].snippet.description;
+//
+// var vid1_title = data.items[0].snippet.title;
+// var vid1_src = 'https://www.youtube.com/embed/' + data.items[0].id.videoId;
+// var vid1_desc = data.items[0].snippet.description;
+for(var i = 0;i<5;i++){
+  document.getElementById('thumbnail'+i).setAttribute('src', 'https://www.youtube.com/embed/' + data.items[i].id.videoId);
+  document.getElementById('title'+i).innerHTML=data.items[i].snippet.title;
+  document.getElementById('description'+i).innerHTML=data.items[i].snippet.description;
 
-document.getElementById('thumbnail2').setAttribute('src', 'https://www.youtube.com/embed/' + data.items[1].id.videoId);
-document.getElementById('title2').innerHTML=data.items[1].snippet.title;
-document.getElementById('description2').innerHTML=data.items[1].snippet.description;
-
-document.getElementById('thumbnail3').setAttribute('src', 'https://www.youtube.com/embed/' + data.items[2].id.videoId);
-document.getElementById('title3').innerHTML=data.items[2].snippet.title;
-document.getElementById('description3').innerHTML=data.items[2].snippet.description;
-
-document.getElementById('thumbnail4').setAttribute('src', 'https://www.youtube.com/embed/' + data.items[3].id.videoId);
-document.getElementById('title4').innerHTML=data.items[3].snippet.title;
-document.getElementById('description4').innerHTML=data.items[3].snippet.description;
+  window.source += ['https://www.youtube.com/embed/' + data.items[i].id.videoId]+" | ";
+  window.title += [data.items[i].snippet.title]+" | ";
+  window.description += [data.items[i].snippet.description]+" | ";
+}
 
 }
 
+
+
+
+function SAVE(){
+  var MongoClient = require('mongodb').MongoClient;
+  var url = "mongodb://localhost:27017/";
+alert(window.title);
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("video");
+    for(var i = 0;i<5;i++){
+
+      dbo.collection("videoInfos").insertOne(window.title, function(err, res) {
+        if (err) throw err;
+        console.log("1 document inserted");
+        db.close();
+      });
+      alert(window.title);
+    }
+
+  });
+}
 
 
  </script>
